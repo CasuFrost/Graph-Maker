@@ -14,9 +14,9 @@ int main(int argc, char *argv[])
 
     SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
-    drawStar(renderer, 100, 100, 50);
-    SDL_RenderPresent(renderer);
-    SDL_Delay(2000);
+    // drawStar(renderer, 100, 100, 50);
+    // SDL_RenderPresent(renderer);
+    // SDL_Delay(2000);
     SDL_Quit();
 
     // COSE SUL GRAFO
@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
 
     Graph g;
 
-    g.showGraphInformation();
+    // g.showGraphInformation();
 
     return 0;
 }
