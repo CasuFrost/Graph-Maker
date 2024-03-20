@@ -1,5 +1,5 @@
 #include "src/drawing.h"
-#include "src/struct.h"
+
 
 #define WIDTH 800
 #define HEIGHT 600
@@ -16,17 +16,23 @@ int main( int argc, char *argv[]){
     SDL_Renderer *renderer = SDL_CreateRenderer(window,-1,SDL_RENDERER_ACCELERATED);
 
     
-
     drawStar(renderer,10,10,10);
-
     SDL_RenderPresent(renderer);
-
-    Graph g(DEFAULT_GRAPH);
-    
-    g.showGraphInformation();
-
-    g.DFS();
-    SDL_Delay(1000);
+    //SDL_Delay(2000);
     SDL_Quit();
+
+    //COSE SUL GRAFO
+    
+    Graph g;
+
+
+
+    
+
+
+    g.showGraphInformation();
+    
+    
+
     return 0;
 }

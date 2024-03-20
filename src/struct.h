@@ -7,23 +7,26 @@
 
 using namespace std;
 
-class Node{
-    public:
+
+struct Node{
+    
         int id;
         vector<Node> adjacent;
-        int visited=0;
+        int x;
+        int y;
+        vector<Node*> adj;
+        
+       
 
 };
 
 class Graph{
-    private :
+    public :
         vector<Node> nodes;
-        vector<int> Vis;
 
+        void createRandomGraph(int nodesNumber,int p){
 
-        void createRandomGraph(int p=8){
-
-            int nodesNumber=rand() % 50 + 1; //The nodes number 
+            //The nodes number 
 
             //Create nodes
             for(int i = 0;i<nodesNumber;i++){
@@ -38,8 +41,9 @@ class Graph{
 
                     int randInt=rand() % 100 + 1;
 
-                    if(randInt<p){          //Prob(i-j)= (p/nodesNumber)
+                    if(randInt<p && i!=j &&!isNodeInVector(nodes[i],nodes[j].adjacent)){          //Prob(i-j)= (p/nodesNumber)
                         nodes[i].adjacent.push_back(nodes[j]);
+                        nodes[j].adjacent.push_back(nodes[i]);
                     }
                 }
                 
@@ -48,10 +52,42 @@ class Graph{
         }
 
 
-    public:
+        void createRandomGraph(int p=8){
+
+            int nodesNumber=rand() % 25 + 1; //The nodes number 
+
+            //Create nodes
+            for(int i = 0;i<nodesNumber;i++){
+                Node a;
+                a.id=i;
+                nodes.push_back(a);
+            }
+
+            //Create edges
+            for(int i = 0;i<nodesNumber;i++){
+                for(int j = 0;j<nodesNumber;j++){
+
+                    int randInt=rand() % 100 + 1;
+
+                    if(randInt<p && i!=j &&!isNodeInVector(nodes[i],nodes[j].adjacent)){          //Prob(i-j)= (p/nodesNumber)
+                        nodes[i].adjacent.push_back(nodes[j]);
+                        nodes[j].adjacent.push_back(nodes[i]);
+                    }
+                }
+                
+            }
+
+        }
+
+
+   
         
         Graph(){
             createRandomGraph(8);
+        }
+
+        Graph(int n,int p){
+            createRandomGraph(n,p);
         }
 
         Graph(int p){
@@ -63,40 +99,40 @@ class Graph{
                 return;
 
             }
-
-            
+ 
             createRandomGraph(p);
         }
+
 
         void createDefaultGraph(){
             Node a; a.id=0;
             Node b; b.id=1;
             Node c; c.id=2;
             Node d; d.id=3;
-            a.adjacent.push_back(b); a.adjacent.push_back(c);
-            d.adjacent.push_back(c);
+
+            a.adj.push_back(&b);b.adj.push_back(&a);
+            a.adj.push_back(&c);c.adj.push_back(&a);
+            d.adj.push_back(&c);c.adj.push_back(&d);
                 
             nodes.push_back(a);
             nodes.push_back(b);
             nodes.push_back(c);
             nodes.push_back(d);
             
-            setupGraph();
-            for (int i = 0; i < nodes.size(); i++) {
-                Vis.push_back(0);
-            }
-
         }
 
         void showGraphInformation() {
 			
 			for (int i = 0; i < nodes.size(); i++) {
 				cout << "\nvert id : " << nodes[i].id;
-				if(nodes[i].adjacent.size()!=0) {
+				if(nodes[i].adj.size()!=0) {
 					cout << ", adjiacents : {";
-					for (int j = 0; j < nodes[i].adjacent.size(); j++) {
-						cout << nodes[i].adjacent[j].id;
-						if (j!= nodes[i].adjacent.size()-1) { cout << ", "; }
+
+					for (int j = 0; j < nodes[i].adj.size(); j++) {
+                        
+						//cout << (*nodes[i].adj[j]).id;
+
+						if (j!= nodes[i].adj.size()-1) { cout << ", "; }
 						else { cout << "}"; }
 					}
 				}
@@ -117,8 +153,6 @@ class Graph{
                     for(int k = 0;k<b.adjacent.size();k++){
                         if(a.id==b.adjacent[k].id){
                             check=1;
-                            
-                            
                         }
                     }
 
@@ -133,31 +167,65 @@ class Graph{
 
                 }
             }
-            
-            //cout<<"\n-----------------\n\n";
-            
+            //cout<<"\n-----------------\n\n";    
         }
 
-        void DFS(){
+        bool isIntInVector(int a,vector<int> b){ //Return true if a is in the adjiacent list of b
+            for(int i=0;i<b.size();i++){
+                if(b[i]==a)return true;
+            }
+            return false;
+        }
+        void updateNodePos(int i,int x, int y){
+            nodes[i].x=x;nodes[i].y=y;
+        }
+        bool isNodeInVector(Node a,vector<Node> b){ //Return true if a is in the adjiacent list of b
+            for(int i=0;i<b.size();i++){
+                if(b[i].id==a.id)return true;
+            }
+            return false;
+        }
+
+        Node getNode(int i){return nodes[i];}
+        
+        /*void DFS(Node x,int verbose=0){
+
+            vector<int> visitedNodes;
+
+            if(verbose==1){
+                cout<<"\n---- Start of the DFS ----\n";
+            }
+            
+            DFSrec(x.id,visitedNodes,verbose);
             cout<<"\n";
-            DFSrec(nodes[0]);
         }
 
-        void DFSrec(Node x){
-            
-            x.visited=1;
-            cout<<"\n il nodo "<<x.id<<" e' stato visitato,gli adiacenti del nodo "<<x.id<<" sono :\n";
-            
-             for(int k = 0;k<x.adjacent.size();k++){
-                
-                cout<<x.adjacent[k].id<<"\n";
-                
-                if(x.adjacent[k].visited==0){
-                    DFSrec(x.adjacent[k]);
+        void DFSrec(int x,vector<int> visitedNodes,int verbose=0){
+
+            visitedNodes.push_back(x);
+            if(verbose!=0){
+                cout<<"\n node "<<x<<" visited";
+            }
+
+            for(int i = 0;i<nodes[x].adjacent.size();i++){
+                if(!isIntInVector(nodes[x].adjacent[i].id,visitedNodes)){
+                    //cout<<"found adjiacent"<<x.adjacent[i].id<<"in "<<x.id<<" list\n";
+                    DFSrec(nodes[x].adjacent[i].id,visitedNodes,verbose);
                 }
                 
-             }
+            }
+
+        }*/
+
+        void test(Node &a,int i = 0){
+            cout<<"\nvert "<<a.id<<" have "<<a.adjacent.size()<<" adj\n";
+
+            if(i==0){
+                i=1;test(a.adjacent[0],i);
+            }
+
         }
+        
 
     
 };
