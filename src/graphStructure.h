@@ -20,10 +20,35 @@ class Graph
 {
 
 private:
+    bool isTheNodesConnected(Node *u, Node *v)
+    {
+        bool a = false;
+        bool b = false;
+        for (int i = 0; i < u->adj.size(); i++)
+        {
+            if (u->adj[i]->id == v->id)
+            {
+                a = true;
+            }
+        }
+        for (int i = 0; i < v->adj.size(); i++)
+        {
+            if (v->adj[i]->id == u->id)
+            {
+                b = true;
+            }
+        }
+
+        return a || b;
+    }
+
     void createEdge(Node *u, Node *v)
     {
-        u->adj.push_back(v);
-        v->adj.push_back(u);
+        if (!isTheNodesConnected(u, v))
+        {
+            u->adj.push_back(v);
+            v->adj.push_back(u);
+        }
     }
 
     void createRandomGraph(int n = 10, float p = 0.3)
@@ -39,7 +64,7 @@ private:
         {
             for (int j = 0; j < n; j++)
             {
-                if ((float)rand() / RAND_MAX < p)
+                if (((float)rand() / RAND_MAX < p))
                 {
                     createEdge(nodes[i], nodes[j]);
                 }
@@ -67,7 +92,6 @@ private:
 
 public:
     vector<Node *> nodes;
-    int size;
 
     Graph(int n = DEFAULT_GRAPH)
     {
