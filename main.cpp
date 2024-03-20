@@ -23,9 +23,9 @@ int main(int argc, char *argv[])
 
     // g.showGraphInformation();*/
 
-    Graph g;
+    Graph g(10, 0.3);
 
-    // g.showGraphInformation();
+    g.showGraphInformation();
 
     return 0;
 }
