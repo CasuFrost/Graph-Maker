@@ -14,6 +14,7 @@ public:
     {
         id = v;
     }
+    bool visited = false;
 };
 
 class Graph
@@ -62,9 +63,9 @@ private:
 
         for (int i = 0; i < n; i++)
         {
-            for (int j = 0; j < n; j++)
+            for (int j = i + 1; j < n; j++)
             {
-                if (((float)rand() / RAND_MAX < p))
+                if (((float)rand() / RAND_MAX < p) && i != j) // Probabilità che ci sia un arco è 1-p
                 {
                     createEdge(nodes[i], nodes[j]);
                 }
@@ -74,15 +75,19 @@ private:
 
     void createDefaultGraph()
     {
-
         Node *a = new Node(1);
         Node *b = new Node(2);
         Node *c = new Node(3);
         Node *d = new Node(4);
 
         a->adj.push_back(b);
+        b->adj.push_back(a);
         a->adj.push_back(c);
+        c->adj.push_back(a);
         b->adj.push_back(c);
+        c->adj.push_back(b);
+        d->adj.push_back(c);
+        c->adj.push_back(d);
 
         nodes.push_back(a);
         nodes.push_back(b);
@@ -90,8 +95,34 @@ private:
         nodes.push_back(d);
     }
 
+    void DFSrec(Node *x, vector<bool> vis, bool verbose, int ident = 0)
+    {
+        if (verbose)
+        {
+            for (int i = 0; i < ident; i++)
+            {
+                cout << " | ";
+            }
+            cout << "currently on node : " << x->id << "\n";
+        }
+        x->visited = true;
+        vis[x->id] = true;
+        for (int i = 0; i < x->adj.size(); i++)
+        {
+            if ((x->adj[i])->visited == false)
+            {
+                DFSrec(x->adj[i], vis, verbose, ++ident);
+            }
+        }
+    }
+
 public:
     vector<Node *> nodes;
+
+    Graph()
+    {
+        createDefaultGraph();
+    }
 
     Graph(int n = DEFAULT_GRAPH)
     {
@@ -131,5 +162,20 @@ public:
                 }
             }
         }
+        cout << "\n";
+    }
+
+    void DFS(Node *x, bool verbose = false)
+    {
+        if (verbose)
+            cout << "\n-----START OF THE DFS------\n";
+        vector<bool> vis;
+        for (int i = 0; i < nodes.size(); i++)
+        {
+            vis.push_back(false);
+        }
+        DFSrec(x, vis, verbose);
+        if (verbose)
+            cout << "\n-----END OF THE DFS------\n";
     }
 };

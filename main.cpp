@@ -23,9 +23,9 @@ int main(int argc, char *argv[])
 
     // g.showGraphInformation();*/
 
-    Graph g(10, 0.3);
+    Graph g(30, 0.1);
 
     g.showGraphInformation();
-
+    g.DFS(g.nodes[0], true);
     return 0;
 }
