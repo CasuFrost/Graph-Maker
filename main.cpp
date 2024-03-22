@@ -16,16 +16,69 @@ int main(int argc, char *argv[])
 
     // drawStar(renderer, 100, 100, 50);
     // SDL_RenderPresent(renderer);
-    // SDL_Delay(2000);
-    SDL_Quit();
 
     // COSE SUL GRAFO
 
-    // g.showGraphInformation();*/
+    Graph g(0, 0.02);
+    g.selected = NULL;
+    int xMouse = 0;
+    int yMouse = 0;
+    SDL_Event event;
+    bool quit = false;
+    while (!quit)
+    {
+        while (SDL_PollEvent(&event))
+        {
+            SDL_GetMouseState(&xMouse, &yMouse);
+            if (event.type == SDL_MOUSEBUTTONDOWN)
+            {
+                if (event.button.button == 1)
+                {
+                    g.addNode(xMouse, yMouse);
+                    if (g.selected)
+                    {
+                        g.addNearest(xMouse, yMouse);
+                    }
+                }
 
-    Graph g(30, 0.1);
+                if (event.button.button == 3)
+                {
+                    g.addNearest(xMouse, yMouse);
+                }
+            }
+            if (event.type == SDL_KEYDOWN)
+            {
+                if (event.key.keysym.sym == SDLK_SPACE)
+                {
+                    drawGraph(renderer, g);
+                    if (!g.selected)
+                        g.selected = g.nodes[0];
+                    DFSdraw(g, g.selected, renderer);
+                    g.selected = NULL;
+                }
+            }
+            if (event.type == SDL_QUIT)
+            {
+                quit = true;
+            }
+        }
+        if (g.selected)
+        {
+            SDL_SetRenderDrawColor(renderer, 255, 191, 41, 255);
+            SDL_RenderDrawLine(renderer, g.selected->pos.x, g.selected->pos.y, xMouse, yMouse);
+        }
 
-    g.showGraphInformation();
-    g.DFS(g.nodes[0], true);
+        drawGraph(renderer, g);
+        SDL_RenderPresent(renderer);
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_RenderClear(renderer);
+    }
+    // g.showGraphInformation();
+
+    // drawGraph(renderer, g);
+
+    // SDL_Delay(600);
+    SDL_Quit();
+
     return 0;
 }

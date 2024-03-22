@@ -1,19 +1,33 @@
 #include <vector>
 #include <random>
 #include <iostream>
-
+#include <math.h>
 #define DEFAULT_GRAPH -1
 using namespace std;
-
+struct point
+{
+    int x;
+    int y;
+};
 class Node
 {
 public:
+    bool selected = false;
+    point pos;
     int id;
     vector<Node *> adj;
     Node(int v)
     {
         id = v;
+        pos.x = 0;
+        pos.y = 0;
     }
+    void setPos(int x, int y)
+    {
+        pos.x = x;
+        pos.y = y;
+    }
+
     bool visited = false;
 };
 
@@ -21,6 +35,26 @@ class Graph
 {
 
 private:
+    vector<Node *> nearest;
+    void calcNodesPos()
+    {
+        int y = 50;
+        int breakLine = 10;
+        if (nodes.size() <= 10)
+        {
+            breakLine = nodes.size() / 2;
+        }
+        for (int i = 0; i < nodes.size(); i++) // calculate positions
+        {
+
+            nodes[i]->setPos(50 + (65 * ((i + 1) % breakLine)), y);
+
+            if ((i + 1) % breakLine == 0)
+            {
+                y += 50;
+            }
+        }
+    }
     bool isTheNodesConnected(Node *u, Node *v)
     {
         bool a = false;
@@ -95,7 +129,7 @@ private:
         nodes.push_back(d);
     }
 
-    void DFSrec(Node *x, vector<bool> vis, bool verbose, int ident = 0)
+    void DFSrec(Node *x, vector<bool> vis, bool verbose, int ident = 0, SDL_Renderer *renderer = NULL)
     {
         if (verbose)
         {
@@ -106,36 +140,51 @@ private:
             cout << "currently on node : " << x->id << "\n";
         }
         x->visited = true;
+
+        if (renderer)
+        {
+            cout << "draw";
+            /*
+            SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+            drawStar(renderer, x->pos.x, x->pos.y, 15);
+            SDL_RenderPresent(renderer);
+            SDL_Delay(200);
+            */
+        }
+
         vis[x->id] = true;
         for (int i = 0; i < x->adj.size(); i++)
         {
             if ((x->adj[i])->visited == false)
             {
-                DFSrec(x->adj[i], vis, verbose, ++ident);
+                DFSrec(x->adj[i], vis, verbose, ++ident, renderer);
             }
         }
     }
 
 public:
+    Node *selected;
     vector<Node *> nodes;
 
-    Graph()
+    Graph(int n = 0, float p = 0)
     {
-        createDefaultGraph();
-    }
-
-    Graph(int n = DEFAULT_GRAPH)
-    {
-        if (n == DEFAULT_GRAPH)
+        if (n == 0 && p == 0)
         {
             createDefaultGraph();
+            calcNodesPos();
             return;
         }
+        createRandomGraph(n, p);
+        calcNodesPos();
     }
 
-    Graph(int n = 10, float p = 0.3)
+    void addNode(int x, int y)
     {
-        createRandomGraph(n, p);
+
+        Node *a = new Node(nodes.size());
+        a->pos.x = x;
+        a->pos.y = y;
+        nodes.push_back(a);
     }
 
     void showGraphInformation()
@@ -165,7 +214,7 @@ public:
         cout << "\n";
     }
 
-    void DFS(Node *x, bool verbose = false)
+    void DFS(Node *x, bool verbose = false, SDL_Renderer *renderer = NULL)
     {
         if (verbose)
             cout << "\n-----START OF THE DFS------\n";
@@ -174,8 +223,55 @@ public:
         {
             vis.push_back(false);
         }
-        DFSrec(x, vis, verbose);
+        DFSrec(x, vis, verbose, 0, renderer);
         if (verbose)
             cout << "\n-----END OF THE DFS------\n";
+    }
+
+    Node *findNear(int x, int y)
+    {
+
+        Node *nearest = nodes[0];
+        int dist = distForm2Points(x, y, nearest->pos.x, nearest->pos.y);
+
+        for (int i = 1; i < nodes.size(); i++)
+        {
+            int tmpDist = distForm2Points(nodes[i]->pos.x, nodes[i]->pos.y, x, y);
+
+            if (tmpDist < dist)
+            {
+                dist = tmpDist;
+                nearest = nodes[i];
+            }
+        }
+        if (dist > 40)
+            return NULL;
+        return nearest;
+    }
+    void addNearest(int x, int y)
+    {
+        Node *n;
+
+        n = findNear(x, y);
+        if (!n)
+            return;
+        nearest.push_back(n);
+        n->selected = true;
+        selected = n;
+        if (nearest.size() == 2)
+        {
+            // cout << nearest[0]->id << nearest[1]->id;
+            createEdge(nearest[0], nearest[1]);
+            nearest[0]->selected = false;
+            nearest[1]->selected = false;
+            selected = NULL;
+            nearest.pop_back();
+            nearest.pop_back();
+        }
+    }
+
+    int distForm2Points(int x0, int y0, int x1, int y1)
+    {
+        return sqrt((((x1 - x0) * (x1 - x0)) + ((y1 - y0) * (y1 - y0))));
     }
 };
