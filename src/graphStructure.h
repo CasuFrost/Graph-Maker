@@ -248,6 +248,7 @@ public:
             return NULL;
         return nearest;
     }
+
     void addNearest(int x, int y)
     {
         Node *n;
@@ -273,5 +274,29 @@ public:
     int distForm2Points(int x0, int y0, int x1, int y1)
     {
         return sqrt((((x1 - x0) * (x1 - x0)) + ((y1 - y0) * (y1 - y0))));
+    }
+
+    void deleteNode(int x, int y)
+    {
+        Node *n = findNear(x, y);
+        if (n)
+        {
+            int k;
+            for (int i = 0; i < nodes.size(); i++)
+            {
+                if (nodes[i] == n)
+                {
+                    k = i;
+                }
+            }
+            nodes.erase(next(nodes.begin(), k));
+
+            for (int i = 0; i < nodes.size(); i++)
+            {
+                for (int j = 0; j < nodes[i]->adj.size(); j++)
+                {
+                }
+            }
+        }
     }
 };

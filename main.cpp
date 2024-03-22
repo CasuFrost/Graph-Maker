@@ -48,6 +48,10 @@ int main(int argc, char *argv[])
             }
             if (event.type == SDL_KEYDOWN)
             {
+                if (event.key.keysym.sym == SDLK_r)
+                {
+                    g.deleteNode(xMouse, yMouse);
+                }
                 if (event.key.keysym.sym == SDLK_SPACE)
                 {
                     drawGraph(renderer, g);
