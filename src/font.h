@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include "drawing.h"
+#include "other.h"
 #include <fstream>
 using namespace std;
 
@@ -21,12 +22,21 @@ public:
     SDL_Renderer *renderer;
     int xPos = 0;
     int yPos = 0;
+    string fontSize = "8";
+
+    int width;
+    int height;
 
     textBox(SDL_Renderer *r, string t = "", Color c = {255, 255, 255})
     {
         color = c;
         renderer = r;
         text = t;
+    }
+
+    void setFontSize(string size)
+    {
+        fontSize = size;
     }
 
     void updatePos(int x, int y)
@@ -67,12 +77,18 @@ public:
                 tmp = "spaz";
             }
 
-            string path = PATH + tmp.append(".txt");
+            string size;
+            size = fontSize;
+            size.append(tmp);
+            tmp = size;
+
+            string path = PATH + fontSize + "/" + tmp.append(".txt");
 
             drawFromFile(path, xPos + relX, yPos + relY);
-            relX += 10;
-        }
 
+            relX += stoi(fontSize) + 2;
+        }
+        height = relY;
         SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, 255);
     }
 
