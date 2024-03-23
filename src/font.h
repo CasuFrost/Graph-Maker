@@ -21,12 +21,14 @@ public:
     SDL_Renderer *renderer;
     int xPos = 0;
     int yPos = 0;
+
     textBox(SDL_Renderer *r, string t = "", Color c = {255, 255, 255})
     {
         color = c;
         renderer = r;
         text = t;
     }
+
     void updatePos(int x, int y)
     {
         xPos = x;
@@ -52,11 +54,13 @@ public:
                 continue;
             }
 
-            /*string tmp = string(text[i], 1).append(".txt");
-            string file = PATH;
-            file.append(tmp);*/
             string tmp;
             tmp = text[i];
+
+            if (text[i] == '?')
+            {
+                tmp = "questionMark";
+            }
 
             if (text[i] == ' ')
             {
@@ -74,7 +78,7 @@ public:
 
     void drawFromFile(string path, int x, int y)
     {
-        SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, 255);
+        SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, 255); // set color text
         char ch;
         fstream fin(path, fstream::in);
 

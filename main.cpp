@@ -73,8 +73,8 @@ int main(int argc, char *argv[])
         }
 
         textBox t(renderer);
-        t.updateStr("axolot");
-        t.updatePos(50, 50);
+        t.updateStr("ciao chiara, come stai?");
+        t.updatePos(10, 10);
         t.drawText();
 
         drawGraph(renderer, g);
