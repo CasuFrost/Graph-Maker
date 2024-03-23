@@ -180,6 +180,14 @@ public:
 
     void addNode(int x, int y)
     {
+        if (nodes.size() != 0)
+        {
+            Node *nearest = findNearest(x, y);
+            if (distForm2Points(x, y, nearest->pos.x, nearest->pos.y) < 50)
+            {
+                return;
+            }
+        }
 
         Node *a = new Node(nodes.size());
         a->pos.x = x;
@@ -248,6 +256,25 @@ public:
             return NULL;
         return nearest;
     }
+    Node *findNearest(int x, int y)
+    {
+
+        Node *nearest = nodes[0];
+        int dist = distForm2Points(x, y, nearest->pos.x, nearest->pos.y);
+
+        for (int i = 1; i < nodes.size(); i++)
+        {
+            int tmpDist = distForm2Points(nodes[i]->pos.x, nodes[i]->pos.y, x, y);
+
+            if (tmpDist < dist)
+            {
+                dist = tmpDist;
+                nearest = nodes[i];
+            }
+        }
+
+        return nearest;
+    }
 
     void addNearest(int x, int y)
     {
@@ -266,8 +293,7 @@ public:
             nearest[0]->selected = false;
             nearest[1]->selected = false;
             selected = NULL;
-            nearest.pop_back();
-            nearest.pop_back();
+            nearest.clear();
         }
     }
 
@@ -279,24 +305,36 @@ public:
     void deleteNode(int x, int y)
     {
         Node *n = findNear(x, y);
-        if (n)
+        if (!n)
         {
-            int k;
-            for (int i = 0; i < nodes.size(); i++)
-            {
-                if (nodes[i] == n)
-                {
-                    k = i;
-                }
-            }
-            nodes.erase(next(nodes.begin(), k));
+            return;
+        }
 
-            for (int i = 0; i < nodes.size(); i++)
+        eraseFromValue(nodes, n);
+
+        cout << "\n\n\n";
+
+        for (int i = 0; i < nodes.size(); i++)
+        {
+
+            eraseFromValue(nodes[i]->adj, n);
+        }
+    }
+
+    void eraseFromValue(vector<Node *> &vector, Node *value) // This function delete the given value from the given vector
+    {
+
+        int k = -1;
+        for (int i = 0; i < vector.size(); i++)
+        {
+            if (vector[i] == value)
             {
-                for (int j = 0; j < nodes[i]->adj.size(); j++)
-                {
-                }
+                k = i;
             }
+        }
+        if (k != -1)
+        {
+            vector.erase(next(vector.begin(), k));
         }
     }
 };

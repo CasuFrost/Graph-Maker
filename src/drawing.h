@@ -1,6 +1,5 @@
 #include <iostream>
 #include <SDL2/SDL.h>
-
 #include "graphStructure.h"
 
 // #include "struct.h"
@@ -9,6 +8,7 @@ using namespace std;
 
 void drawStar(SDL_Renderer *renderer, int x = 100, int y = 100, int r = 15)
 {
+
     // SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     SDL_RenderDrawLine(renderer, x - r, y, x + r, y);
     SDL_RenderDrawLine(renderer, x, y - r, x, y + r);
@@ -52,6 +52,7 @@ void drawGraph(SDL_Renderer *renderer, Graph &g)
         drawStar(renderer, g.nodes[i]->pos.x, g.nodes[i]->pos.y, 15); // draw node
     }
 }
+
 void DFSrecDraw(Graph g, Node *x, SDL_Renderer *renderer)
 {
 

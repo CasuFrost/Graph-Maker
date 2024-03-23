@@ -1,7 +1,7 @@
-#include "src/drawing.h"
+#include "src/font.h"
 
-#define WIDTH 800
-#define HEIGHT 600
+#define WIDTH 1280
+#define HEIGHT 720
 
 using namespace std;
 
@@ -13,7 +13,6 @@ int main(int argc, char *argv[])
     SDL_Window *window = SDL_CreateWindow("Graph Maker", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WIDTH, HEIGHT, SDL_WINDOW_ALLOW_HIGHDPI);
 
     SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-
     // drawStar(renderer, 100, 100, 50);
     // SDL_RenderPresent(renderer);
 
@@ -58,6 +57,7 @@ int main(int argc, char *argv[])
                     if (!g.selected)
                         g.selected = g.nodes[0];
                     DFSdraw(g, g.selected, renderer);
+                    g.selected->selected = false;
                     g.selected = NULL;
                 }
             }
@@ -71,6 +71,11 @@ int main(int argc, char *argv[])
             SDL_SetRenderDrawColor(renderer, 255, 191, 41, 255);
             SDL_RenderDrawLine(renderer, g.selected->pos.x, g.selected->pos.y, xMouse, yMouse);
         }
+
+        textBox t(renderer);
+        t.updateStr("axolot");
+        t.updatePos(50, 50);
+        t.drawText();
 
         drawGraph(renderer, g);
         SDL_RenderPresent(renderer);
