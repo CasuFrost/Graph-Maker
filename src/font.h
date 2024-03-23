@@ -4,7 +4,7 @@
 #include <fstream>
 using namespace std;
 
-const string PATH = "src/fontLetters/";
+const string PATH = "src/PngToTextParser/PngText/";
 
 struct Color
 {
