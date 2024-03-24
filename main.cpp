@@ -120,6 +120,7 @@ int main(int argc, char *argv[])
 
         drawGraph(renderer, g);
         SDL_RenderPresent(renderer);
+
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
     }

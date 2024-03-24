@@ -36,6 +36,7 @@ class Graph
 
 private:
     vector<Node *> nearest;
+
     void calcNodesPos()
     {
         int y = 50;
@@ -55,6 +56,7 @@ private:
             }
         }
     }
+
     bool isTheNodesConnected(Node *u, Node *v)
     {
         bool a = false;
@@ -256,6 +258,7 @@ public:
             return NULL;
         return nearest;
     }
+
     Node *findNearest(int x, int y)
     {
 
@@ -284,7 +287,9 @@ public:
         if (!n)
             return;
         nearest.push_back(n);
+
         n->selected = true;
+
         selected = n;
         if (nearest.size() == 2)
         {
@@ -311,8 +316,6 @@ public:
         }
 
         eraseFromValue(nodes, n);
-
-        cout << "\n\n\n";
 
         for (int i = 0; i < nodes.size(); i++)
         {
