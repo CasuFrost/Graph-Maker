@@ -2,7 +2,7 @@
 #include <string>
 #include "drawing.h"
 #include "other.h"
-#include <fstream>
+
 using namespace std;
 
 const string PATH = "src/PngToTextParser/PngText/";

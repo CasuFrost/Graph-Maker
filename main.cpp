@@ -7,7 +7,7 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-    bool defaultSize = false;
+    bool defaultSize = true;
 
     int WIDTH = 0;
     int HEIGHT = 0;
@@ -52,12 +52,24 @@ int main(int argc, char *argv[])
     DFSText.updateStr("press the space keyboard\nbutton to start the DFS");
     DFSText.updatePos(10, 170);
 
+    textBox saveText(renderer);
+    saveText.setFontSize("8");
+    saveText.updateStr("press the s keyboard\nto save the graph");
+    saveText.updatePos(10, 200);
+
+    textBox loadText(renderer);
+    loadText.setFontSize("8");
+    loadText.updateStr("press the f keyboard\nto load the graph\nfrom file");
+    loadText.updatePos(10, 230);
+
     vector<textBox> texts;
     texts.push_back(title);
     texts.push_back(nodeText);
     texts.push_back(removeText);
     texts.push_back(edgeText);
     texts.push_back(DFSText);
+    texts.push_back(loadText);
+    texts.push_back(saveText);
 
     Graph g(0, 0.02);
     g.selected = NULL;
@@ -92,6 +104,14 @@ int main(int argc, char *argv[])
                 {
                     g.deleteNode(xMouse, yMouse);
                 }
+                if (event.key.keysym.sym == SDLK_s)
+                {
+                    g.saveGraph("graph.txt");
+                }
+                if (event.key.keysym.sym == SDLK_f)
+                {
+                    g.loadGraphFromFile("graph.txt");
+                }
                 if (event.key.keysym.sym == SDLK_SPACE)
                 {
                     drawGraph(renderer, g);
@@ -124,6 +144,7 @@ int main(int argc, char *argv[])
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
     }
+
     // g.showGraphInformation();
 
     // drawGraph(renderer, g);

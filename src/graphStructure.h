@@ -2,6 +2,8 @@
 #include <random>
 #include <iostream>
 #include <math.h>
+#include <string>
+#include <fstream>
 #define DEFAULT_GRAPH -1
 using namespace std;
 struct point
@@ -324,6 +326,129 @@ public:
         }
     }
 
+    void saveGraph(string fileName)
+    {
+        ofstream write("savedGraph/" + fileName);
+        for (int i = 0; i < nodes.size(); i++)
+        {
+            write << nodes[i]->id << " \n"
+                  << nodes[i]->pos.x << "," << nodes[i]->pos.y;
+            if (true)
+            {
+                write << "\n";
+            }
+            for (int j = 0; j < nodes[i]->adj.size(); j++)
+            {
+
+                write << nodes[i]->adj[j]->id;
+
+                if (j != nodes[i]->adj.size() - 1)
+                {
+                    write << ",";
+                }
+            }
+            write << "\n";
+        }
+
+        write.close();
+    }
+
+    void loadGraphFromFile(string fileName)
+    {
+
+        nodes.clear();
+        ifstream infile("savedGraph/" + fileName);
+        ifstream infile2("savedGraph/" + fileName);
+        string line;
+        int cnt = 0;
+        while (getline(infile, line))
+        {
+            Node *tmp;
+            if (cnt == 0)
+            { // reading id
+                if (line == "")
+                {
+                    continue;
+                }
+
+                tmp = new Node(stoi(line));
+            }
+            int i = 0;
+            if (cnt == 1)
+            { // reading positions
+                string x = "";
+                while (line[i] != ',')
+                {
+                    x += line[i];
+                    i++;
+                }
+                i++;
+
+                tmp->pos.x = stoi(x);
+
+                string y = "";
+                while (line[i])
+                {
+                    y += line[i];
+                    i++;
+                }
+
+                tmp->pos.y = stoi(y);
+                nodes.push_back(tmp);
+            }
+            cnt++;
+            if (cnt == 3)
+            {
+                cnt = 0;
+            }
+        }
+        while (getline(infile2, line)) // write a function that create the edges
+        {
+            int ownerId = stoi(line);
+            getline(infile2, line);
+            getline(infile2, line);
+            string adjToAdd = "";
+            for (int i = 0; i < line.length(); i++)
+            {
+
+                if (line[i] == ',')
+                {
+                    int idAdj = stoi(adjToAdd);
+                    createEdgeFromId(idAdj, ownerId);
+                    adjToAdd = "";
+                }
+                else
+                {
+                    adjToAdd += line[i];
+                }
+            }
+            int idAdj = stoi(adjToAdd);
+            createEdgeFromId(idAdj, ownerId);
+        }
+    }
+    void createEdgeFromId(int id1, int id2)
+    {
+
+        Node *u = new Node(-99);
+        u = findNodeFromId(id1);
+        Node *v = new Node(-99);
+        v = findNodeFromId(id2);
+        createEdge(u, v);
+    }
+
+    Node *findNodeFromId(int id)
+    {
+
+        for (int i = 0; i < nodes.size(); i++)
+        {
+
+            if (id == nodes[i]->id)
+            {
+                return nodes[i];
+            }
+        }
+        return NULL;
+    }
     void eraseFromValue(vector<Node *> &vector, Node *value) // This function delete the given value from the given vector
     {
 
