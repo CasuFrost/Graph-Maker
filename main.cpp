@@ -1,4 +1,4 @@
-#include "src/font.h"
+#include "src/fontAndButton.h"
 
 // #define WIDTH 1280
 // #define HEIGHT 720
@@ -71,6 +71,11 @@ int main(int argc, char *argv[])
     texts.push_back(loadText);
     texts.push_back(saveText);
 
+    button test(renderer);
+    test.setFontSize("8");
+    test.updateStr("ciao come stai?\nio sto molto bene!");
+    test.updatePos(10, 280);
+
     Graph g(0, 0.02);
     g.selected = NULL;
     int xMouse = 0;
@@ -137,6 +142,7 @@ int main(int argc, char *argv[])
         {
             texts[i].drawText();
         }
+        test.drawText();
 
         drawGraph(renderer, g);
         SDL_RenderPresent(renderer);

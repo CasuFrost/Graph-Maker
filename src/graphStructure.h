@@ -407,6 +407,10 @@ public:
             int ownerId = stoi(line);
             getline(infile2, line);
             getline(infile2, line);
+            if (line.length() == 0) // The node dosen't have adjacents
+            {
+                continue;
+            }
             string adjToAdd = "";
             for (int i = 0; i < line.length(); i++)
             {
@@ -426,6 +430,7 @@ public:
             createEdgeFromId(idAdj, ownerId);
         }
     }
+
     void createEdgeFromId(int id1, int id2)
     {
 
