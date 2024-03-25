@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
 
     textBox title(renderer);
     title.setFontSize("2");
-    title.updateStr("Graph Editor 1.0");
+    title.updateStr("Graph Maker 1.0");
     title.updatePos(10, 10);
 
     button edgeText(renderer);
