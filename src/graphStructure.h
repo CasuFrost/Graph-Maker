@@ -37,8 +37,6 @@ class Graph
 {
 
 private:
-    vector<Node *> nearest;
-
     void calcNodesPos()
     {
         int y = 50;
@@ -167,6 +165,7 @@ private:
     }
 
 public:
+    vector<Node *> nearest;
     Node *selected;
     vector<Node *> nodes;
 

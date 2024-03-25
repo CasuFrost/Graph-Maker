@@ -35,46 +35,46 @@ int main(int argc, char *argv[])
     title.updateStr("Graph Editor");
     title.updatePos(10, 10);
 
-    textBox edgeText(renderer);
+    button edgeText(renderer);
     edgeText.setFontSize("1");
-    edgeText.updateStr("press the right mouse\nbutton on two nodes\nto create an edge");
+    edgeText.updateStr("create edge");
     edgeText.updatePos(10, 80);
 
     button DFS(renderer);
     DFS.setFontSize("1");
     DFS.updateStr("DFS");
-    DFS.updatePos(10, 170);
+    DFS.updatePos(10, 110);
 
     button saveText(renderer);
     saveText.setFontSize("1");
     saveText.updateStr("save graph");
-    saveText.updatePos(10, 200);
+    saveText.updatePos(10, 170);
 
     button loadText(renderer);
     loadText.setFontSize("1");
     loadText.updateStr("load graph");
-    loadText.updatePos(10, 230);
+    loadText.updatePos(10, 200);
 
     vector<button> buttons;
     vector<textBox> texts;
 
     texts.push_back(title);
 
-    texts.push_back(edgeText);
+    buttons.push_back(edgeText);
     buttons.push_back(DFS);
     buttons.push_back(loadText);
     buttons.push_back(saveText);
 
-    button test(renderer);
-    test.setFontSize("1");
-    test.updateStr("add node");
-    test.updatePos(10, 50);
-    buttons.push_back(test);
+    button addNodeButton(renderer);
+    addNodeButton.setFontSize("1");
+    addNodeButton.updateStr("add node");
+    addNodeButton.updatePos(10, 50);
+    buttons.push_back(addNodeButton);
 
     button remove(renderer);
     remove.setFontSize("1");
     remove.updateStr("delete node");
-    remove.updatePos(10, 130);
+    remove.updatePos(10, 140);
     buttons.push_back(remove);
 
     Graph g(0, 0.02);
@@ -86,6 +86,7 @@ int main(int argc, char *argv[])
 
     while (!quit)
     {
+
         while (SDL_PollEvent(&event))
         {
             SDL_GetMouseState(&xMouse, &yMouse);
@@ -93,28 +94,35 @@ int main(int argc, char *argv[])
             {
                 if (event.button.button == 1)
                 {
+                    if (user->selectMode)
+                    {
+                        if (g.nearest.size() == 1)
+                        {
+                            user->selectMode = false;
+                        }
+                        g.addNearest(xMouse, yMouse);
+                        user->addNodeMode = false;
+                        user->deleteNodeMode = false;
+                    }
                     if (user->addNodeMode)
                     {
-                        g.addNode(xMouse, yMouse);
 
+                        g.addNode(xMouse, yMouse);
+                        user->selectMode = false;
                         user->addNodeMode = false;
                     }
                     if (user->deleteNodeMode)
                     {
                         g.deleteNode(xMouse, yMouse);
-
+                        user->selectMode = false;
                         user->deleteNodeMode = false;
                     }
 
                     for (int i = 0; i < buttons.size(); i++)
                     {
                         buttons[i].checkIfPressed(xMouse, yMouse, user, &g);
+                        // buttons[getIndexFromValue(buttons, a)].updateStr("back");
                     }
-                }
-
-                if (event.button.button == 3)
-                {
-                    g.addNearest(xMouse, yMouse);
                 }
             }
 
@@ -124,7 +132,7 @@ int main(int argc, char *argv[])
             }
         }
 
-        if (g.selected)
+        if (g.selected && user->selectMode)
         {
             SDL_SetRenderDrawColor(renderer, 255, 191, 41, 255);
             SDL_RenderDrawLine(renderer, g.selected->pos.x, g.selected->pos.y, xMouse, yMouse);
@@ -150,6 +158,11 @@ int main(int argc, char *argv[])
         if (user->deleteNodeMode)
         {
             Color c = {255, 0, 0};
+            drawAddPivot(renderer, xMouse, yMouse, c);
+        }
+        if (user->selectMode)
+        {
+            Color c = {255, 180, 0};
             drawAddPivot(renderer, xMouse, yMouse, c);
         }
         SDL_RenderPresent(renderer);

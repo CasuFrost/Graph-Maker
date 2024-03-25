@@ -1,9 +1,10 @@
-#include "fontAndButton.h"
+#include "font.h"
 class userInfo
 {
 public:
     bool addNodeMode = false;
     bool deleteNodeMode = false;
+    bool selectMode = false;
 };
 class button : public textBox
 {
@@ -97,6 +98,12 @@ public:
             g->selected->selected = false;
             g->selected = NULL;
             return;
+        }
+        if (text == "create edge")
+        {
+            user->selectMode = true;
+            return;
+            // switch to add node mode
         }
         if (text == "add node")
         {

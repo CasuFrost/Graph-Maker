@@ -101,12 +101,13 @@ void DFSdraw(Graph g, Node *x, SDL_Renderer *renderer)
 
 void drawAddPivot(SDL_Renderer *renderer, int x, int y, Color c)
 {
+    int size = 8;
     SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, 255);
-    SDL_RenderDrawLine(renderer, x, y, x + 5, y);
+    SDL_RenderDrawLine(renderer, x, y, x + size, y);
 
-    SDL_RenderDrawLine(renderer, x, y, x, y + 5);
+    SDL_RenderDrawLine(renderer, x, y, x, y + size);
 
-    SDL_RenderDrawLine(renderer, x, y, x, y - 5);
+    SDL_RenderDrawLine(renderer, x, y, x, y - size);
 
-    SDL_RenderDrawLine(renderer, x, y, x - 5, y);
+    SDL_RenderDrawLine(renderer, x, y, x - size, y);
 }
