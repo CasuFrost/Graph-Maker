@@ -1,4 +1,4 @@
-#include "src/fontAndButton.h"
+#include "src/buttonsFunctionalities.h"
 
 // #define WIDTH 1280
 // #define HEIGHT 720
@@ -7,6 +7,9 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
+
+    userInfo *user = new userInfo();
+
     bool defaultSize = true;
 
     int WIDTH = 0;
@@ -28,53 +31,51 @@ int main(int argc, char *argv[])
     SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
     textBox title(renderer);
-    title.setFontSize("16");
+    title.setFontSize("2");
     title.updateStr("Graph Editor");
     title.updatePos(10, 10);
 
-    textBox nodeText(renderer);
-    nodeText.setFontSize("8");
-    nodeText.updateStr("press the left mouse\nbutton to add a node");
-    nodeText.updatePos(10, 50);
-
     textBox edgeText(renderer);
-    edgeText.setFontSize("8");
+    edgeText.setFontSize("1");
     edgeText.updateStr("press the right mouse\nbutton on two nodes\nto create an edge");
     edgeText.updatePos(10, 80);
 
-    textBox removeText(renderer);
-    removeText.setFontSize("8");
-    removeText.updateStr("press the r keyboard\nbutton on a node\nto delete it");
-    removeText.updatePos(10, 130);
+    button DFS(renderer);
+    DFS.setFontSize("1");
+    DFS.updateStr("DFS");
+    DFS.updatePos(10, 170);
 
-    textBox DFSText(renderer);
-    DFSText.setFontSize("8");
-    DFSText.updateStr("press the space keyboard\nbutton to start the DFS");
-    DFSText.updatePos(10, 170);
-
-    textBox saveText(renderer);
-    saveText.setFontSize("8");
-    saveText.updateStr("press the s keyboard\nto save the graph");
+    button saveText(renderer);
+    saveText.setFontSize("1");
+    saveText.updateStr("save graph");
     saveText.updatePos(10, 200);
 
-    textBox loadText(renderer);
-    loadText.setFontSize("8");
-    loadText.updateStr("press the f keyboard\nto load the graph\nfrom file");
+    button loadText(renderer);
+    loadText.setFontSize("1");
+    loadText.updateStr("load graph");
     loadText.updatePos(10, 230);
 
+    vector<button> buttons;
     vector<textBox> texts;
+
     texts.push_back(title);
-    texts.push_back(nodeText);
-    texts.push_back(removeText);
+
     texts.push_back(edgeText);
-    texts.push_back(DFSText);
-    texts.push_back(loadText);
-    texts.push_back(saveText);
+    buttons.push_back(DFS);
+    buttons.push_back(loadText);
+    buttons.push_back(saveText);
 
     button test(renderer);
-    test.setFontSize("8");
-    test.updateStr("ciao come stai?\nio sto molto bene!");
-    test.updatePos(10, 280);
+    test.setFontSize("1");
+    test.updateStr("add node");
+    test.updatePos(10, 50);
+    buttons.push_back(test);
+
+    button remove(renderer);
+    remove.setFontSize("1");
+    remove.updateStr("delete node");
+    remove.updatePos(10, 130);
+    buttons.push_back(remove);
 
     Graph g(0, 0.02);
     g.selected = NULL;
@@ -82,6 +83,7 @@ int main(int argc, char *argv[])
     int yMouse = 0;
     SDL_Event event;
     bool quit = false;
+
     while (!quit)
     {
         while (SDL_PollEvent(&event))
@@ -91,10 +93,22 @@ int main(int argc, char *argv[])
             {
                 if (event.button.button == 1)
                 {
-                    g.addNode(xMouse, yMouse);
-                    if (g.selected)
+                    if (user->addNodeMode)
                     {
-                        g.addNearest(xMouse, yMouse);
+                        g.addNode(xMouse, yMouse);
+
+                        user->addNodeMode = false;
+                    }
+                    if (user->deleteNodeMode)
+                    {
+                        g.deleteNode(xMouse, yMouse);
+
+                        user->deleteNodeMode = false;
+                    }
+
+                    for (int i = 0; i < buttons.size(); i++)
+                    {
+                        buttons[i].checkIfPressed(xMouse, yMouse, user, &g);
                     }
                 }
 
@@ -103,35 +117,13 @@ int main(int argc, char *argv[])
                     g.addNearest(xMouse, yMouse);
                 }
             }
-            if (event.type == SDL_KEYDOWN)
-            {
-                if (event.key.keysym.sym == SDLK_r)
-                {
-                    g.deleteNode(xMouse, yMouse);
-                }
-                if (event.key.keysym.sym == SDLK_s)
-                {
-                    g.saveGraph("graph.txt");
-                }
-                if (event.key.keysym.sym == SDLK_f)
-                {
-                    g.loadGraphFromFile("graph.txt");
-                }
-                if (event.key.keysym.sym == SDLK_SPACE)
-                {
-                    drawGraph(renderer, g);
-                    if (!g.selected)
-                        g.selected = g.nodes[0];
-                    DFSdraw(g, g.selected, renderer);
-                    g.selected->selected = false;
-                    g.selected = NULL;
-                }
-            }
+
             if (event.type == SDL_QUIT)
             {
                 quit = true;
             }
         }
+
         if (g.selected)
         {
             SDL_SetRenderDrawColor(renderer, 255, 191, 41, 255);
@@ -142,9 +134,24 @@ int main(int argc, char *argv[])
         {
             texts[i].drawText();
         }
-        test.drawText();
+        for (int i = 0; i < buttons.size(); i++)
+        {
+            buttons[i].drawText();
+        }
 
         drawGraph(renderer, g);
+
+        if (user->addNodeMode)
+        {
+            user->deleteNodeMode = false;
+            Color c = {0, 255, 0};
+            drawAddPivot(renderer, xMouse, yMouse, c);
+        }
+        if (user->deleteNodeMode)
+        {
+            Color c = {255, 0, 0};
+            drawAddPivot(renderer, xMouse, yMouse, c);
+        }
         SDL_RenderPresent(renderer);
 
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);

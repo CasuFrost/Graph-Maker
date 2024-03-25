@@ -1,10 +1,16 @@
 #include <iostream>
 #include <SDL2/SDL.h>
 #include "graphStructure.h"
-
 // #include "struct.h"
 
 using namespace std;
+
+struct Color
+{
+    int r;
+    int g;
+    int b;
+};
 
 void drawStar(SDL_Renderer *renderer, int x = 100, int y = 100, int r = 15)
 {
@@ -91,4 +97,16 @@ void DFSdraw(Graph g, Node *x, SDL_Renderer *renderer)
     {
         g.nodes[i]->visited = false;
     }
+}
+
+void drawAddPivot(SDL_Renderer *renderer, int x, int y, Color c)
+{
+    SDL_SetRenderDrawColor(renderer, c.r, c.g, c.b, 255);
+    SDL_RenderDrawLine(renderer, x, y, x + 5, y);
+
+    SDL_RenderDrawLine(renderer, x, y, x, y + 5);
+
+    SDL_RenderDrawLine(renderer, x, y, x, y - 5);
+
+    SDL_RenderDrawLine(renderer, x, y, x - 5, y);
 }

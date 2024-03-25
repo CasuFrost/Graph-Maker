@@ -311,6 +311,10 @@ public:
 
     void deleteNode(int x, int y)
     {
+        if (nodes.size() == 0)
+        {
+            return;
+        }
         Node *n = findNear(x, y);
         if (!n)
         {
