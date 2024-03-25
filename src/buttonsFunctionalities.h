@@ -122,6 +122,11 @@ public:
             g->saveGraph("graph.txt");
             return;
         }
+        if (text == "example graph")
+        {
+            g->loadGraphFromFile("example.txt");
+            return;
+        }
         if (text == "load graph")
         {
             g->loadGraphFromFile("graph.txt");

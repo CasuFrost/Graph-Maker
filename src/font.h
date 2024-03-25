@@ -129,6 +129,10 @@ public:
             {
                 tmp = "questionMark";
             }
+            if (text[i] == '.')
+            {
+                tmp = "point";
+            }
 
             if (text[i] == ' ')
             {

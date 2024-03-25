@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
         WIDTH = 1280;
         HEIGHT = 720;
     }
-
+    // a
     SDL_Init(SDL_INIT_EVERYTHING);
 
     SDL_Window *window = SDL_CreateWindow("Graph Maker", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WIDTH, HEIGHT, SDL_WINDOW_ALLOW_HIGHDPI);
@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
 
     textBox title(renderer);
     title.setFontSize("2");
-    title.updateStr("Graph Editor");
+    title.updateStr("Graph Editor 1.0");
     title.updatePos(10, 10);
 
     button edgeText(renderer);
@@ -55,11 +55,16 @@ int main(int argc, char *argv[])
     loadText.updateStr("load graph");
     loadText.updatePos(10, 200);
 
+    button exampleG(renderer);
+    exampleG.setFontSize("1");
+    exampleG.updateStr("example graph");
+    exampleG.updatePos(10, 230);
+
     vector<button> buttons;
     vector<textBox> texts;
 
     texts.push_back(title);
-
+    buttons.push_back(exampleG);
     buttons.push_back(edgeText);
     buttons.push_back(DFS);
     buttons.push_back(loadText);

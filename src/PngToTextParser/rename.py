@@ -1,5 +1,5 @@
 import os
-path = 'PngText'
+path = 'PngLetters'
 directory = os.fsencode(path)
 for file in os.listdir(directory):
     filename = os.fsdecode(file)
@@ -8,3 +8,4 @@ for file in os.listdir(directory):
         a=filename.replace('8','')
         new_file = os.path.join(path, a)
         os.rename(old_file, new_file)
+        
