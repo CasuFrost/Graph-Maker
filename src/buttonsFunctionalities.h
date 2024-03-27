@@ -99,6 +99,16 @@ public:
             g->selected = NULL;
             return;
         }
+        if (text == "BFS")
+        {
+            drawGraph(renderer, *g);
+            if (!g->selected)
+                g->selected = g->nodes[0];
+            BFSdraw(*g, g->selected, renderer);
+            g->selected->selected = false;
+            g->selected = NULL;
+            return;
+        }
         if (text == "create edge")
         {
             user->selectMode = true;
@@ -107,6 +117,11 @@ public:
         }
         if (text == "add node")
         {
+            if (user->addNodeMode)
+            {
+                user->addNodeMode = false;
+                return;
+            }
             user->addNodeMode = true;
             return;
             // switch to add node mode

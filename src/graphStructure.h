@@ -473,4 +473,12 @@ public:
             vector.erase(next(vector.begin(), k));
         }
     }
+
+    void clearGraphFromVisit()
+    {
+        for (int i = 0; i < nodes.size(); i++)
+        {
+            nodes[i]->visited = false;
+        }
+    }
 };

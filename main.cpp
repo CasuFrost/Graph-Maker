@@ -30,9 +30,14 @@ int main(int argc, char *argv[])
 
     SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
+    textBox author(renderer);
+    author.setFontSize("1");
+    author.updateStr("Marco Casu");
+    author.updatePos(10, HEIGHT - 25);
+
     textBox title(renderer);
     title.setFontSize("2");
-    title.updateStr("Graph Maker 1.0");
+    title.updateStr("Graph Maker 1.1");
     title.updatePos(10, 10);
 
     button edgeText(renderer);
@@ -64,6 +69,8 @@ int main(int argc, char *argv[])
     vector<textBox> texts;
 
     texts.push_back(title);
+    texts.push_back(author);
+
     buttons.push_back(exampleG);
     buttons.push_back(edgeText);
     buttons.push_back(DFS);
@@ -79,8 +86,14 @@ int main(int argc, char *argv[])
     button remove(renderer);
     remove.setFontSize("1");
     remove.updateStr("delete node");
-    remove.updatePos(10, 140);
+    remove.updatePos(10, 260);
     buttons.push_back(remove);
+
+    button bfs(renderer);
+    bfs.setFontSize("1");
+    bfs.updateStr("BFS");
+    bfs.updatePos(10, 140);
+    buttons.push_back(bfs);
 
     Graph g(0, 0.02);
     g.selected = NULL;
@@ -109,9 +122,9 @@ int main(int argc, char *argv[])
                         user->addNodeMode = false;
                         user->deleteNodeMode = false;
                     }
+
                     if (user->addNodeMode)
                     {
-
                         g.addNode(xMouse, yMouse);
                         user->selectMode = false;
                         user->addNodeMode = false;

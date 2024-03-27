@@ -1,6 +1,8 @@
 #include <iostream>
 #include <SDL2/SDL.h>
 #include "graphStructure.h"
+#include <queue>
+
 // #include "struct.h"
 
 using namespace std;
@@ -93,11 +95,78 @@ void DFSdraw(Graph g, Node *x, SDL_Renderer *renderer)
 
     DFSrecDraw(g, x, renderer);
 
-    for (int i = 0; i < g.nodes.size(); i++)
-    {
-        g.nodes[i]->visited = false;
-    }
+    g.clearGraphFromVisit();
 }
+
+void BFSdraw(Graph g, Node *x, SDL_Renderer *renderer)
+{
+    vector<Node *> coda;
+    coda.push_back(x);
+    x->visited = true;
+    SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+    drawStar(renderer, x->pos.x, x->pos.y, 15);
+    SDL_RenderPresent(renderer);
+    SDL_Delay(150);
+
+    while (coda.size() != 0)
+    {
+
+        Node *v = new Node(-99);
+        v = coda.front();
+
+        g.eraseFromValue(coda, coda[0]);
+        for (int i = 0; i < v->adj.size(); i++)
+        {
+            if (!v->adj[i]->visited)
+            {
+                v->adj[i]->visited = true;
+                coda.push_back(v->adj[i]);
+
+                SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+                SDL_RenderDrawLine(renderer, v->adj[i]->pos.x, v->adj[i]->pos.y, v->pos.x, v->pos.y);
+
+                SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
+                drawStar(renderer, v->adj[i]->pos.x, v->adj[i]->pos.y, 15);
+
+                SDL_RenderPresent(renderer);
+            }
+        }
+
+        SDL_Delay(200);
+    }
+
+    g.clearGraphFromVisit();
+}
+/*void BFSdraw(Graph g, Node *x)
+{
+
+    queue<Node *> q;
+    q.push(x);
+
+    while (q.size() != 0)
+    {
+        Node *v = q.front();
+
+        q.pop();
+        vector<Node *> tmp;
+        for (int i = 0; i < v->adj.size(); i++)
+        {
+            if (v->adj[i]->visited == false)
+            {
+                q.push(v);
+                tmp.push_back(v);
+            }
+            // disegna quelli in q
+        }
+        cout << "\n";
+        for (int i = 0; i < q.size(); i++)
+        {
+            cout << " " << tmp[i]->id;
+        }
+
+        g.clearGraphFromVisit();
+    }
+}*/
 
 void drawAddPivot(SDL_Renderer *renderer, int x, int y, Color c)
 {
