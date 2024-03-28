@@ -10,6 +10,7 @@ class button : public textBox
 {
 private:
     Color boxColor = {255, 0, 0};
+    Color OgBoxColor = {255, 0, 0};
     int changeColorCounter = 0;
     int boxWidth = 0;
     int boxHeight = 0;
@@ -119,6 +120,7 @@ public:
         {
             if (user->addNodeMode)
             {
+
                 user->addNodeMode = false;
                 return;
             }
